@@ -6,30 +6,46 @@ ALPHABET = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd'
 
 class NumeralSystemGenerator(object):
     def __init__(self, 
-    max_output_length=6,
-    custom_alphabet_length=len(ALPHABET),
-    disable_negative_numbers=False,
-    disable_out_of_range_exception=False,
-    remove_unnecessary_chars=False,
+        max_output_length=6,
+        custom_alphabet_length=len(ALPHABET),
+        autoincrement_step=1,
+        autoincrement=False,
+        disable_negative_numbers=False,
+        disable_out_of_range_exception=False,
+        remove_unnecessary_chars=False,
     ):
         """
         max_output_length --                maximum output code string length not including '-'\n
         custom_alphabet_length --           slice length from ALPHABET\n
         disable_negative_numbers --         num < 0 will raise 'Input number out of range' exception\n
-        disable_out_of_range_exception --   num > range will be counted from the begginning (130/(-127 -- 128) -> 1)\n
+        disable_out_of_range_exception --   num > range will be counted from the begginning (130/(-127 -- 128) -> -126)\n
         remove_unnecessary_chars --         remove unused characters from the code string (-000F0 -> -F0)
         """
 
         self.alphabet = ALPHABET[:custom_alphabet_length]
         self.max_output_length = max_output_length
 
+        self.alphabet_length = len(self.alphabet)
+        self.unsigned_range = self.alphabet_length**self.max_output_length - 1
+
         self.disable_negative_numbers = disable_negative_numbers
         self.disable_out_of_range_exception = disable_out_of_range_exception
         self.remove_unnecessary_chars = remove_unnecessary_chars
 
-        self.alphabet_length = len(self.alphabet)
-        self.unsigned_range = self.alphabet_length**self.max_output_length - 1
+        self.autoincrement_step = autoincrement_step
+        self.autoincrement = autoincrement
+        if self.autoincrement:
+            self.counter = self.get_range()['min'] - 1
 
+    def next(self):
+        """Return dict {'encrypted': string, 'decrypted': integer}"""
+
+        if not self.autoincrement:
+            raise Exception('Can`t use next() with autoincrement == False')
+
+        self.counter += self.autoincrement_step
+        return {'encrypted': self.encrypt(self.counter), 'decrypted': self.counter}
+                                                    # or 'decrypted': self.decrypt(self.encrypt(self.counter))
     def encrypt(self, num: int) -> str:
         """Encrypt input integer to code string"""
 
@@ -71,8 +87,12 @@ class NumeralSystemGenerator(object):
     def get_range(self):
         """Return range as dict {'min': min, 'max': max}"""
 
-        return {'min': -self.unsigned_range,
-                'max': self.unsigned_range}
+        if self.disable_negative_numbers:
+            return {'min': 0,
+                    'max': self.unsigned_range}
+        else:
+            return {'min': -self.unsigned_range,
+                    'max': self.unsigned_range}
 
     def _encrypt_handler(self, num: int) -> str:
         """Hadle encrypting input string"""
