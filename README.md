@@ -2,12 +2,12 @@
 A simple class that encodes any numeral system from the decimal system using the alphabet and decodes back
 
 # Installing:
-<li>place file in project directory</li>
+<li>place file into project directory</li>
 <li>import as Python module</li>
 
 # Class settings:
 <li>max_output_length -- maximum output code string length not including '-'</li>
-<li>custom_alphabet_length -- slice length from ALPHABET</li>
+<li>alphabet_len -- slice length from ALPHABET</li>
 <li>autoincrement_step -- step for returned generator</li>
 <li>autoincrement -- possible to use get_generator()</li>
 <li>disable_negative_numbers -- set amplitude >= 0; num < 0 will raise 'Input number out of range' exception</li>
