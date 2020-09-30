@@ -1,21 +1,23 @@
-from config import ALPHABET, MAX_OUTPUT_LEN
+from config import ALPHABET
 
 
 class Encryptor(object):
     def __init__(self,
             alphabet_len=len(ALPHABET),
+            max_output_len=6,
         ):
         """
-
+        alphabet_len -- slice length of ALPHABET\n
+        autoincrement_step -- step for generator\n
         """
 
-        self.max_output_len = MAX_OUTPUT_LEN
+        self.max_output_len = max_output_len
         self.alphabet_len = alphabet_len
 
         self.alphabet = ALPHABET[:self.alphabet_len]
 
-    def __encrypt(self, num: int) -> None:
-        """"""
+    def __encrypt(self, num: int) -> str:
+        """Return encrypted input number as code string"""
 
         res = ''
         while len(res) != self.max_output_len:
@@ -28,7 +30,7 @@ class Encryptor(object):
         return res[::-1]
 
     def __decrypt(self, code: str) -> int:
-        """"""
+        """Return decrypted input code as integer"""
 
         if not any(char in code for char in self.alphabet):
             raise Exception(f'Unknown char. Character isn`t in the alphabet')
@@ -43,4 +45,3 @@ class Encryptor(object):
             if code[i] == self.alphabet[0]: continue     
             res += self.alphabet.index(code[i]) * self.alphabet_len**((self.max_output_len - 1) - i)
         return res
-
