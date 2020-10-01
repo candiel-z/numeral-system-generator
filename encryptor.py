@@ -8,7 +8,7 @@ class Encryptor(object):
         ):
         """
         alphabet_len -- slice length of ALPHABET\n
-        autoincrement_step -- step for generator\n
+        max_output_len -- maximal output code string length
         """
 
         self.max_output_len = max_output_len
