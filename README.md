@@ -2,9 +2,8 @@
 Convert ANY-to-ANY numeral system
 
 # Installing:
-<li>place files into project directory</li>
+<li>place encryptor.py file into project directory</li>
 <li>import as Python module</li>
-<i>EncryptorInterface class in encryptor_interface.py is the entry point</i>
 
 # Using
 <li>This is a potential generator of URLs or identifiers in as large numeral system as is needed to reduce the length of the result. 
