@@ -13,7 +13,7 @@ def encrypt(num: int) -> str:
     """
 
     res = ''
-    while num == 0:
+    while num != 0:
         res += alphabet[num % alphabet_len]
         num = int(num / alphabet_len)
     return res[::-1]
