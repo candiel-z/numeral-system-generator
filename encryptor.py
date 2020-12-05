@@ -1,54 +1,50 @@
-from config import ALPHABET
+ALPHABET = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',     
+            'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',     
+            'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',     
+            'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']               
+FROM_BASE = len(ALPHABET)
+TO_BASE = len(ALPHABET)
 
 
-class Encryptor(object):
-    def __init__(self,
-            alphabet_len,
-        ):
-        """
-        alphabet_len -- a base of numeral system (> 1)
-        """
-
-        self._alphabet_len = alphabet_len
-        self._alphabet = ALPHABET[:self._alphabet_len]
-
-        if self._alphabet_len < 2:
-            raise Exception('alphabet length cannot be less than 2')
-
-    def encrypt(self, num: int) -> str:
-        """Return input decimal integer (also negative) as code string"""
-
-        if num >= 0: 
-            return self._encrypt(num)
+def negative_support(func):
+    def wrapper(val, base):
+        if val[0] == '-':
+            return '-' + func(val[1:], base)
         else: 
-            return '-' + self._encrypt(-num)
+            return func(val, base)
+    return wrapper 
 
-    def decrypt(self, code: str) -> int:
-        """Return input code string as decimal integer."""
+@negative_support
+def from_decimal(val: str, base: int = FROM_BASE) -> str:
+    """
+    :param val: string in the number system with base 10
+    :returns: :param val: converted to number system with base :param base:
+    """
 
-        if code[0] != '-': 
-            return self._decrypt(code)
-        else: 
-            return -self._decrypt(code[1:])
+    res = ''
+    val = int(val)
+    alphabet = ALPHABET[:base]
 
-    def _encrypt(self, num: int) -> str:
-        """Return input decimal integer as code string"""
+    if val == 0: return '0'
 
-        res = ''
-        while num > 0:
-            res += self._alphabet[num % self._alphabet_len]
-            num = int(num / self._alphabet_len)
-        return res[::-1]
+    while val != 0:
+        res += alphabet[val % base]
+        val = int(val / base)
+    return res[::-1]
 
-    def _decrypt(self, code: str) -> int:
-        """Return input code string as decimal integer."""
+@negative_support
+def to_decimal(val: str, base: int = TO_BASE) -> str:
+    """
+    :param val: string in the number system with base :param base:
+    :returns: :param val: converted to number system with base 10
+    """
 
-        if not any(char in code for char in self._alphabet):
-            raise Exception('Unknown char. Character isn`t in the alphabet')
+    res = 0
+    val = val[::-1]
+    alphabet = ALPHABET[:base]
 
-        res = 0
-        code = code[::-1]
+    for i in range(len(val)):   
+        res += alphabet.index(val[i]) * base**i
+    return str(res)
 
-        for i in range(len(code)):   
-            res += self._alphabet.index(code[i]) * self._alphabet_len**i
-        return res
+print(to_decimal(from_decimal('1024', 62), 62))
